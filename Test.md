@@ -25,6 +25,12 @@ T2
 
 ### Решение 1
 ```sql
+SELECT  CASE
+	WHEN EXISTS (SELECT * FROM t1 EXCEPT SELECT * FROM t2) = FALSE  
+       	AND  EXISTS (SELECT * FROM t2 EXCEPT SELECT * FROM t1) = FALSE THEN 'EQUAL'
+        ELSE 'NOT EQUAL'
+        END as eq
+-- Если разность А - В = 0 и В - А = 0 то таблицы идентичны
 ```
 
 ### Задача 2: Имеется таблица без первичного ключа. Известно, что в таблице имеется задвоение данных. Необходимо удалить дубликаты из таблицы.
