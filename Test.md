@@ -224,4 +224,15 @@ MXN	|	Мексиканское песо|
 
 ### Решение 6
 ```sql
+SELECT iso_code, iso_name
+FROM
+(SELECT  *,
+	CASE 
+	WHEN iso_code = 'RUR' THEN 1
+        WHEN iso_code = 'USD' THEN 2
+        WHEN iso_code = 'EUR' THEN 3
+        ELSE 42
+	END as rank_
+FROM tab6) tab 
+ORDER BY rank_, iso_code
 ```
