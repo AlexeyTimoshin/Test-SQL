@@ -79,6 +79,12 @@ ID	|PID	|NAM	|PARENT_NAM|
 
 ### Решение 3
 ```sql
+-- Oracle recursive
+SELECT t.id_, t.pid, t.nam, PRIOR t.nam AS parent_nam
+  FROM tree t
+ START WITH t.pid = 0
+CONNECT BY PRIOR t.id_ = t.pid
+       AND t.id_ <> 5;
 ```
 
 ### Задача 4: Имеется таблица курсов валют. Курс валюты устанавливается не на каждую календарную дату и действует до следующей смены курса. Уникальный ключ: curr_id + date_rate. Напишите запрос, который покажет действующее значение курса заданной валюты на любую заданную календарную дату.  
@@ -171,6 +177,21 @@ PAY_TYPE|	MON|	SM|
 
  ### Решение 5
 ```sql
+-- Oracle
+SELECT pd.pay_type, pd.month_year AS mon, SUM(pay_sum) AS sm
+  FROM (SELECT pd.pay_type,
+               to_char(pd.pay_date, 'mm.yyyy') AS month_year,
+               pd.pay_sum
+          FROM payment_document pd) pd
+ GROUP BY ROLLUP(pd.pay_type, pd.month_year);
+ --------------------
+SELECT pd.pay_type,
+       to_char(pd.pay_date, 'MM.YYYY') AS mon,
+       SUM(pd.pay_sum) AS sm
+  FROM payment_document pd
+ GROUP BY CUBE(pd.pay_type, to_char(pd.pay_date, 'MM.YYYY'))
+HAVING grouping_id(pd.pay_type, to_char(pd.pay_date, 'MM.YYYY')) <> 2
+ ORDER BY pd.pay_type ASC;
 ```
 
 ### Задача 6: Дана таблица валют (справочник), необходимо написать запрос, который возвращает отсортированный список валют в алфавитном порядке по столбцу ISO_CODE, причем первыми должны идти основные валюты, с которыми работает банк: RUR, USD, EUR.  
