@@ -104,6 +104,23 @@ CURR_ID|	DATE_RATE|	RATE|
 
 ### Решение 4
 ```sql
+CREATE OR REPLACE FUNCTION rateDates (dates DATE, currId INT) RETURNS TABLE (rate INT) AS $$
+BEGIN
+  RETURN QUERY (
+    SELECT rates.rate 
+    FROM rates
+	WHERE curr_id = currId AND date_rate in (
+	SELECT max(date_rate)
+  	FROM rates
+  	WHERE date_rate <= dates
+  	LIMIT 1
+)       
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM ratedates('2010-01-03', 1) -- 32  
+SELECT * FROM ratedates('2010-01-10', 2) -- 41
 ```
 
 ### Задача 5: Имеется таблица с данными по платежным документам. Необходимо написать запрос, который выведет данные общей суммой за каждый месяц по типам документов с итогами по каждому типу и общим итогом.
