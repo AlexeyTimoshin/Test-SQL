@@ -52,10 +52,20 @@ T1
 
 ### Задача 3: Есть таблица с данными в виде дерева. Необходимо написать запрос для получения дерева от корневого узла, узел 5 и все его потомки не должны попасть в результат, нужно вывести для каждого узла имя его родителя, данные отсортировать в порядке возрастания ID с учетом иерархии  
 ```sql
-  create table t
-    (id number, -- идентификатор узла
-    pid number, -- идентификатор родительского узла
-    nam varchar2(255))-- наименование
+CREATE table  t1
+    (id INTEGER, -- идентификатор узла
+    pid INTEGER, -- идентификатор родительского узла
+    nam VARCHAR(255)); -- наименование
+
+INSERT INTO t1 (id, pid, nam) VALUES
+(1, 	NULL,  'Корень'),
+(2, 	1, 	'Узел2'),
+(3, 	1, 	'Узел3'),
+(4, 	2, 	'Узел4'),
+(5, 	4, 	'Узел5'),
+(6,	5, 	'Узел6'),
+(7, 	4, 	'Узел7');
+
 ```
 Пример данных:  
 ID |PID|NAM|
@@ -161,37 +171,57 @@ PAY_TYPE|	MON|	SM|
 ---|---|---|
 1|		01.2012|	600
 1|		02.2012|	900
-1	|			|1500|
+1	|	NULL		|1500|
 2	|	01.2012	|600
 2	|	02.2012	|700
 2	|	04.2012	|800
 2	|	05.2012	|900
 2	|	06.2012	|1000
-2	|			|4000
+2	|		NULL	|4000
 3	|	01.2012|	1100
 3	|	03.2012|	1200
 3	|	05.2012	|2700
 3	|	06.2012	|1500
-3	|			|6500
-	|			|12000
+3	|		NULL	|6500
+NULL	|		NULL	|12000
 
  ### Решение 5
 ```sql
--- Oracle
-SELECT pd.pay_type, pd.month_year AS mon, SUM(pay_sum) AS sm
-  FROM (SELECT pd.pay_type,
-               to_char(pd.pay_date, 'mm.yyyy') AS month_year,
-               pd.pay_sum
-          FROM payment_document pd) pd
- GROUP BY ROLLUP(pd.pay_type, pd.month_year);
- --------------------
-SELECT pd.pay_type,
-       to_char(pd.pay_date, 'MM.YYYY') AS mon,
-       SUM(pd.pay_sum) AS sm
-  FROM payment_document pd
- GROUP BY CUBE(pd.pay_type, to_char(pd.pay_date, 'MM.YYYY'))
-HAVING grouping_id(pd.pay_type, to_char(pd.pay_date, 'MM.YYYY')) <> 2
- ORDER BY pd.pay_type ASC;
+SELECT paytype, 
+       monthyear AS mon,
+       SUM(paysum) AS sm
+FROM (
+    SELECT paytype,
+           to_char(paydate, 'mm.yyyy') AS monthyear,
+           paysum
+    FROM t1) t2 
+GROUP BY ROLLUP(paytype, monthyear)
+ORDER BY 1, 2;
+```
+###  Код для Postgres
+```sql
+CREATE table t1 (
+id INTEGER,
+paytype INTEGER,
+paydate date,
+paysum INTEGER
+);
+INSERT INTO t1 (id, paytype, paydate, paysum) VALUES 
+(1, 	1, 	'2012.01.01.', 	100),
+(2 ,	1, 	'2012.01.02', 	200),
+(3 ,    1 ,    '2012.01.03', 	300),
+(4 ,	1 ,	'2012.02.01', 	400),
+(5 ,	1, 	'2012.02.01',	500),
+(6 ,    2,	'2012.01.01' ,	600),
+(7 ,	2,	'2012.02.01' ,	700),
+(8 ,	2 ,	'2012.01.04',	800),
+(9 ,	2 ,	'2012.05.01' ,	900),
+(10 ,	2 ,	'2012.06.01' ,	1000),
+(11 ,	3 ,	'2012.01.10' ,	1100),
+(12 ,	3 ,	'2012.03.01',	1200),
+(13 ,	3 ,	'2012.05.01' ,	1300),
+(14 ,	3 ,	'2012.05.05',	1400),
+(15 ,	3, 	'2012.06.01',	1500);
 ```
 
 ### Задача 6: Дана таблица валют (справочник), необходимо написать запрос, который возвращает отсортированный список валют в алфавитном порядке по столбцу ISO_CODE, причем первыми должны идти основные валюты, с которыми работает банк: RUR, USD, EUR.  
