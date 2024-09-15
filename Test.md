@@ -95,6 +95,12 @@ SELECT t.id_, t.pid, t.nam, PRIOR t.nam AS parent_nam
  START WITH t.pid = 0
 CONNECT BY PRIOR t.id_ = t.pid
        AND t.id_ <> 5;
+
+-- Postgresql not recursive (not same order)
+SELECT t.id, t.pid, t.nam, t2.nam parent_nam -- запрос на поиск элемента
+FROM t 
+LEFT JOIN t as t2 ON t.pid = rr.id 
+WHERE t.pid IS NULL OR t.pid <> 5 and t.id <> 5
 ```
 
 ### Задача 4: Имеется таблица курсов валют. Курс валюты устанавливается не на каждую календарную дату и действует до следующей смены курса. Уникальный ключ: curr_id + date_rate. Напишите запрос, который покажет действующее значение курса заданной валюты на любую заданную календарную дату.  
