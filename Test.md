@@ -99,7 +99,7 @@ CONNECT BY PRIOR t.id_ = t.pid
 -- Postgresql not recursive (not same order)
 SELECT t.id, t.pid, t.nam, t2.nam parent_nam -- запрос на поиск элемента
 FROM t 
-LEFT JOIN t as t2 ON t.pid = rr.id 
+LEFT JOIN t as t2 ON t.pid = t2.id 
 WHERE t.pid IS NULL OR t.pid <> 5 and t.id <> 5
 
 
