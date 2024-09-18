@@ -67,6 +67,23 @@ T1
 
 ### Решение 2
 ```sql
+--postgresql 
+-- Через создание новой таблицы и копирование в неё уникальных записей
+CREATE TABLE t2 (like t1);
+INSERT INTO t2 (a, b) 
+SELECT DISTINCT A, b
+FROM t1;
+DROP t1;
+ALTER table t2
+RENAME TO t1;
+
+-- MYSQL
+WITH cte_dup AS (
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY a,b) AS RowNum
+    FROM t1
+)
+DELETE FROM cte_dup WHERE RowNum > 1;
+
 ```
 
 ### Задача 3: Есть таблица с данными в виде дерева. Необходимо написать запрос для получения дерева от корневого узла, узел 5 и все его потомки не должны попасть в результат, нужно вывести для каждого узла имя его родителя, данные отсортировать в порядке возрастания ID с учетом иерархии  
@@ -84,8 +101,8 @@ INSERT INTO t1 (id, pid, nam) VALUES
 (5, 	4, 	'Узел5'),
 (6,	5, 	'Узел6'),
 (7, 	4, 	'Узел7');
-
 ```
+
 Пример данных:  
 ID |PID|NAM|
 ---|---|---|
