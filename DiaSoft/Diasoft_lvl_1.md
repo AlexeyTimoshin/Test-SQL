@@ -101,7 +101,19 @@ INSERT INTO A (Name) VALUES
 
 #### Решение 
  
-```sql 
+```sql
+--- через группировку
+SELECT name 
+FROM a 
+GROUP BY name 
+HAVING COUNT(*) > 1
+
+--- чеез оконку
+SELECT name 
+FROM 
+(SELECT name, ROW_NUMBER() OVER(PARTITION BY name) as row_num
+FROM a) t 
+WHERE row_num > 1
 
 ```
 
@@ -139,7 +151,22 @@ INSERT INTO A (id, Name) VALUES
 
 #### Решение 
  
-```sql 
+```sql
+--- через вложенный запрос
+SELECT id, name 
+FROM a 
+WHERE id not IN
+(SELECT a1.id 
+FROM a
+JOIN a a1 ON a.id < a1.id AND a.name = a1.name)
+
+--- через оконку
+SELECT id, NAME 
+FROM
+	(SELECT id, name, 
+ 		ROW_NUMBER() OVER(PARTITION BY name ORDER BY id) rw_num
+	FROM a) t 
+WHERE rw_num = 1
 
 ```
 
@@ -180,7 +207,13 @@ INSERT INTO a(id, amount) VALUES
 #### Решение 
  
 ```sql 
-
+SELECT  MIN(amount) as min, 
+	MAX(amount) as max,
+        SUM(amount) as sum,
+        SUM(amount) FILTER (WHERE amount < 0) as neg_sum,
+        SUM(amount) FILTER (WHERE amount > 0) as pos_sum,
+        COUNT(DISTINCT(amount)) as uniqe    
+FROM a
 ```
 
 ### 5 Написать запрос, который из двух таблиц A и B вернет все строки, в столбце name которых есть подстрока 'иван'.
@@ -223,5 +256,10 @@ INSERT INTO  b (name) VALUES
 #### Решение 
  
 ```sql 
-
+SELECT *
+FROM
+(SELECT * FROM a 
+UNION
+SELECT * FROM b) 
+WHERE name Ilike '%иван%'
 ```
