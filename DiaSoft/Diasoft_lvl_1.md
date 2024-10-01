@@ -1,4 +1,4 @@
-### 1 Написать запрос, котрый из таблиц A и B (столбец id – integer identity primary key) вернет все строки таблицы A, отсутствующие в таблице B и все строки таблицы B, отсутствующие в таблице A. Сформировать столбец remark, как показано в примере
+### 1. Написать запрос, котрый из таблиц A и B (столбец id – integer identity primary key) вернет все строки таблицы A, отсутствующие в таблице B и все строки таблицы B, отсутствующие в таблице A. Сформировать столбец remark, как показано в примере
 
 A  
 |id|name|
@@ -53,11 +53,23 @@ INSERT INTO b (id, Name) VALUES
 
 #### Решение 
  
-```sql 
+```sql
+--- решение через множества
+WITH cte as (
+	 SELECT * FROM a 
+  INTERSECT 
+  SELECT * FROM B
+)
 
+SELECT *, 'Нет в В' as remark FROM a
+WHERE (id, name) NOT IN (SELECT * FROM cte)
+UNION 
+SELECT *, 'Нет в A' as remark FROM b
+WHERE (id, name) NOT IN (SELECT * FROM cte)
+ORDER BY 1
 ```
 
-### 2 Написать запрос, который из таблицы A вернет неуникальные значения столбца name.
+### 2. Написать запрос, который из таблицы A вернет неуникальные значения столбца name.
 
 A  
 |name|
