@@ -33,11 +33,22 @@ B
 
 Код для бд  
 ```sql 
-CREATE TABLE  ();
-INSERT INTO  () 
-VALUES 
-(),
-
+CREATE TABLE  a (id int PRIMARY Key, name Varchar(5));
+CREATE TABLE  b (id int PRIMARY Key, name Varchar(5));
+INSERT INTO A (id, Name) VALUES 
+(1,	'AAA'),
+(2,	'BBB'),
+(3,	'CCC'),
+(4,	'DDD'),
+(5,	'EEE'),
+(6,	'FFF');
+INSERT INTO b (id, Name) VALUES 
+(4,	'DDD'),
+(5,	'EEE'),
+(6,	'FFF'),
+(7,	'GGG'),
+(8,	'HHH'),
+(9,	'III');
 ```
 
 #### Решение 
@@ -66,12 +77,14 @@ A
 
 Код для бд  
 ```sql 
-CREATE TABLE  ();
-
-INSERT INTO  () 
-VALUES 
-(),
-
+CREATE TABLE  A (name Varchar(5));
+INSERT INTO A (Name) VALUES 
+('AAA'),
+('BBB'),
+('AAA'),
+('CCC'),
+('BBB'),
+('DDD');
 ```
 
 #### Решение 
@@ -102,12 +115,14 @@ A
 
 Код для бд  
 ```sql 
-CREATE TABLE  ();
-
-INSERT INTO  () 
-VALUES 
-(),
-
+CREATE TABLE  A (id INT PRIMARY KEY, name Varchar(5));
+INSERT INTO A (id, Name) VALUES 
+(1, 'AAA'),
+(2, 'BBB'),
+(3, 'AAA'),
+(4, 'CCC'),
+(5, 'BBB'),
+(6, 'DDD');
 ```
 
 #### Решение 
@@ -139,11 +154,15 @@ min|max|sum|sum_-|sum_+|uniqe|
 
 Код для бд  
 ```sql 
-CREATE TABLE  ();
-INSERT INTO  () 
-VALUES 
-(),
-
+CREATE TABLE a (id INT PRIMARY KEY, amount);
+INSERT INTO a(id, amount) VALUES 
+(1, 100),
+(2, 200),
+(3, 300),
+(4, -100),
+(5, 200),
+(6, 300),
+(7, -100);
 ```
 
 #### Решение 
@@ -177,11 +196,16 @@ B
 
 Код для бд  
 ```sql 
-CREATE TABLE  ();
-INSERT INTO  () 
-VALUES 
-(),
-
+CREATE TABLE  A (name Varchar(100));
+CREATE TABLE  b (name Varchar(100));
+INSERT INTO  A (name) VALUES 
+('ОАО "Мосэнерго"'),
+('ЗАО "Ивановохлеб"'),
+('ЗАО "Туламебель"');
+INSERT INTO  b (name) VALUES
+('ЗАО "Ивановохлеб"'),
+('Смирнов Иван'),
+('Иванов Петр');
 ```
 
 #### Решение 
