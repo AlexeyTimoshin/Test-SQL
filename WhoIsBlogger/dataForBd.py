@@ -24,9 +24,9 @@ for i in range(1):
     print("INSERT INTO visits(visitId, patientId, serviceId, date) VALUES")
     for id in visitId:
         if id == visitId[-1]:
-            print(f'({id}, {random.randint(patientId[0], patientId[-1])}, {random.randint(serviceId[0],serviceId[-1])}, "{random.randint(date[0], date[-1])}-{random.randint(1,13)}-{random.randint(1,31)}");')
+            print(f"({id}, {random.randint(patientId[0], patientId[-1])}, {random.randint(serviceId[0],serviceId[-1])}, '{random.randint(date[0], date[-1])}-{random.randint(1,13)}-{random.randint(1,31)}');")
         else:
-            print(f'({id}, {random.randint(patientId[0], patientId[-1])}, {random.randint(serviceId[0],serviceId[-1])}, "{random.randint(date[0], date[-1])}-{random.randint(1,12)}-{random.randint(1,30)}"),')
+            print(f"({id}, {random.randint(patientId[0], patientId[-1])}, {random.randint(serviceId[0],serviceId[-1])}, '{random.randint(date[0], date[-1])}-{random.randint(1,12)}-{random.randint(1,30)}'),")
 
 for i in range(1):
     print("INSERT INTO Services(serviceId, cost) VALUES")
