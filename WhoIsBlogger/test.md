@@ -229,37 +229,47 @@ WHERE sum_month IN (
     FROM cte)
 
 --- получим максимум отдельно по каждому году и месяцу
-SELECT year, month,
-       MAX(sum_month) OVER(PARTITION BY year) as sum
+
+WITH cte AS
+(SELECT year, month,
+       sum_month,
+       MAX(sum_month) OVER(PARTITION BY YEAR)
 FROM
-(SELECT
+(   SELECT
         EXTRACT(YEAR FROM v.date) AS year,
         EXTRACT(MONTH FROM v.date) AS month,
         SUM(s.cost) sum_month
-FROM Patients p
-JOIN Visits v ON p.patientId = v.patientId
-JOIN Services s ON v.serviceId = s.serviceId
-WHERE p.age > 35
-GROUP BY 1, 2) t
+	FROM Patients p
+	JOIN Visits v ON p.patientId = v.patientId
+	JOIN Services s ON v.serviceId = s.serviceId
+	WHERE p.age > 35
+GROUP BY 1, 2) t) 
+
+SELECT 
+	   CONCAT(year,'-', month) year_month,
+       sum_month
+FROM cte
+WHERE sum_month = max
+
 
 ```
 
 В) какая услуга обеспечивает наибольший вклад в доход за последний год  
-```sql
 
+```sql
 WITH visitF AS (
 SELECT serviceId,
-       EXTRACT (YEAR FROM date) year
+       EXTRACT (YEAR FROM date) as year
 FROM Visits)
 
-SELECT serviceId
+SELECT serviceId, sum_cst
 FROM 
-(SELECT v.serviceId,
+(	SELECT v.serviceId,
         SUM(s.cost) sum_cst
-FROM visitF v
-JOIN Services s ON v.serviceId = s.serviceId
-WHERE v.year IN (SELECT MAX(year) FROM visitF)
-GROUP BY 1) t
+	FROM visitF v
+	JOIN Services s ON v.serviceId = s.serviceId
+	WHERE v.year IN (SELECT MAX(year) FROM visitF)
+	GROUP BY 1) t
 ORDER BY sum_cst DESC
 LIMIT 1
 ```
@@ -268,15 +278,15 @@ LIMIT 1
 ```sql
 WITH visitF AS (
 SELECT serviceId,
-       EXTRACT (YEAR FROM date) year
+       EXTRACT (YEAR FROM date) as year
 FROM Visits)
 
 SELECT  v.serviceId,
-        ROUND(SUM(s.cost) OVER(PARTITION BY serviceId)::DECIMAL / SUM(s.cost) OVER(), 2) share 
+        ROUND(SUM(s.cost) OVER(PARTITION BY v.serviceId)::DECIMAL / SUM(s.cost) OVER(), 3) as share 
 FROM visitF v
 JOIN Services s ON v.serviceId = s.serviceId
 WHERE v.year IN (SELECT MAX(year) FROM visitF)
-GROUP BY 1
+GROUP BY 1, s.cost
 ORDER BY share DESC
 LIMIT 5
 ```
