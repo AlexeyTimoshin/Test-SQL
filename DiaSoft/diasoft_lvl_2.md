@@ -25,6 +25,29 @@ Result
 |1| AAA|
 |5| EEE|
 
+<details>
+  <summary> Код для бд </summary>
+  
+  ``` SQL
+  CREATE TABLE A (id 	INT, name VARCHAR(5));
+INSERT INTO a (id, name) VALUES
+(1,	'AAA'),
+(2,	'BBB'),
+(3,	'CCC'), 
+(4,	'DDD'),
+(5,	'EEE');
+
+CREATE TABLE B (id 	INT, name VARCHAR(5));
+INSERT INTO b (id, name) VALUES
+(1, null),
+(2,	'BBB'),
+(3,	'CCC'),
+(4,	'CCC'),
+(5,	null),
+(6,	'DDD');
+  ```
+</details>
+
 Решение
 ```sql
 ```
