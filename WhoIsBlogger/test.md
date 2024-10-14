@@ -282,7 +282,7 @@ SELECT serviceId,
 FROM Visits)
 
 SELECT  v.serviceId,
-        ROUND(SUM(s.cost) OVER(PARTITION BY v.serviceId)::DECIMAL / SUM(s.cost) OVER(), 3) as share 
+        ROUND(SUM(s.cost)::DECIMAL / SUM(s.cost) OVER(), 3) as share 
 FROM visitF v
 JOIN Services s ON v.serviceId = s.serviceId
 WHERE v.year IN (SELECT MAX(year) FROM visitF)
