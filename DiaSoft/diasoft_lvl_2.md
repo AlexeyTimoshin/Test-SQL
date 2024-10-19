@@ -93,16 +93,21 @@ declare @name; select @name = 'XXXX'
 set @name = (select name from A where id = 0)
 print @name
 go
+-- вернёт 'XXXX', т.к второе присваивание не содержит данных и возвращает Null
+
 -- вариант E
 declare @name; select @name = 'XXXX'
 set @name = (select name from A where id = 1)
 print @name
 go
+-- AAAA, потому что оно присваивается последним
+
 -- вариант F
 declare @name; select @name = 'XXXX'
 set @name = (select name from A where id = 2)
 print @name
 go
+-- первое случайное значение из дубликатов
 ```
 
 ### 3. Опишите отличия и особенности следующих команд delete from A и truncate table A?
@@ -140,6 +145,12 @@ A до вставки
 |4| DDD|
 |5| EEE|
 
+Эта ситуация могла произойти по причине параллеризации процессов. Например выполнилась вставка и одновременно сработал  
+какой-то триггер на удаление данных или какой-то пользователь в другой сессии, имеющий доступ в эту таблицу  
+с правами на DML операции произвёл DELETE строк по фильтру. Так как здесь не был выполнен commit,  
+то данные после вставки не сохранялись. 
+Чтобы это исправить, необходимо после каждой вставки данных в этом случае ставить commit.  
+
 
 ### 5. (T-SQL) Найдите ошибку в следующем скрипте: 
 ```sql
@@ -151,3 +162,6 @@ insert A(id,name) values(1,'AAAA')
   if @@error <> 0 rollback transaction B else commit transaction B
 commit transaction A
 ```
+отсутствие «;»  
+в блоке начала транзакции не указано её имя «В»  
+используется save в неположенном месте  
