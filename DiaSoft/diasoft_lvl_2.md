@@ -64,23 +64,30 @@ A
 |2| BBB|
 |3| CCC|
 
-Какой результат вернет каждый из шести следующих запросов? Опишите, почему сервер вернет такой результат.
+Какой результат вернет каждый из шести следующих запросов? Опишите, почему сервер вернет такой результат.  
+Примеры данного кода в Postgresql не работают. 
 ```sql
 -- вариант A
 declare @name; select @name = 'XXXX'
 select @name = name from A where id = 0
 print @name
 go
+-- Вернёт ошибку из за ошибки синтаксиса
+
 -- вариант B
 declare @name; select @name = 'XXXX'
 select @name = name from A where id = 1
 print @name
 go
+-- Вернёт ошибку из за ошибки синтаксиса
+
 -- вариант C
 declare @name; select @name = 'XXXX'
 select @name = name from A where id = 2
 print @name
 go
+-- Вернёт ошибку из за ошибки синтаксиса
+
 -- вариант D
 declare @name; select @name = 'XXXX'
 set @name = (select name from A where id = 0)
