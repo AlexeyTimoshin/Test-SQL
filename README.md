@@ -4,6 +4,7 @@
 * [Мидл аналитик разработчик FUN&SUN](https://github.com/AlexeyTimoshin/Test-SQL/tree/main/FUN%26SUN)
 * [Дата аналитик WhoIsBlogger](https://github.com/AlexeyTimoshin/Test-SQL/blob/main/WhoIsBlogger/test.md)
 * [Мидл разработчик SQL ETL Diasoft](https://github.com/AlexeyTimoshin/Test-SQL/blob/main/DiaSoft/)
+   
 Находятся в работе:  
 * -
 
